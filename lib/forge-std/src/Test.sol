@@ -21,5 +21,13 @@ contract Test {
     function assertEq(bool a, bool b) internal pure {
         require(a == b, "assertion failed: bools not equal");
     }
+
+    function assertTrue(bool condition) internal pure {
+        require(condition, "assertion failed: condition is false");
+    }
+
+    function assertFalse(bool condition) internal pure {
+        require(!condition, "assertion failed: condition is true");
+    }
 }
 

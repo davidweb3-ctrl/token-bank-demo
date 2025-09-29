@@ -29,7 +29,7 @@ contract TokenBank {
      * @dev Deposit tokens into the bank
      * @param amount The amount of tokens to deposit
      */
-    function deposit(uint256 amount) public {
+    function deposit(uint256 amount) public virtual {
         require(amount > 0, "Amount must be greater than 0");
         require(token.balanceOf(msg.sender) >= amount, "Insufficient token balance");
         require(token.allowance(msg.sender, address(this)) >= amount, "Insufficient allowance");

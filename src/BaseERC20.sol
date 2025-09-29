@@ -29,10 +29,10 @@ contract BaseERC20 {
 
     // ============ Storage Mappings ============
     /// @dev Mapping from account addresses to their token balances
-    mapping (address => uint256) balances; 
+    mapping (address => uint256) internal balances; 
     /// @dev Mapping from token owner to spender allowances
     /// @notice allowances[owner][spender] = amount
-    mapping (address => mapping (address => uint256)) allowances; 
+    mapping (address => mapping (address => uint256)) internal allowances; 
 
     // ============ Events ============
     /// @dev Emitted when tokens are transferred from one account to another
@@ -56,10 +56,10 @@ contract BaseERC20 {
         totalSupply = TOKEN_TOTAL_SUPPLY;
 
         // Assign all tokens to the contract deployer
-        balances[msg.sender] = totalSupply;
+        balances[msg.sender] = TOKEN_TOTAL_SUPPLY;
         
         // Emit Transfer event for initial token creation
-        emit Transfer(address(0), msg.sender, totalSupply);
+        emit Transfer(address(0), msg.sender, TOKEN_TOTAL_SUPPLY);
     }
 
     // ============ View Functions ============

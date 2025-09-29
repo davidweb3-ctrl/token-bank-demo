@@ -6,5 +6,6 @@ library console {
     function log(string memory p0, address p1) internal pure {}
     function log(string memory p0, uint256 p1) internal pure {}
     function log(string memory p0, string memory p1) internal pure {}
+    function log(bool p0) internal pure {}
 }
 
