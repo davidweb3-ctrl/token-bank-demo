@@ -16,9 +16,11 @@ jobs:
     - name: Install Foundry
       uses: foundry-rs/foundry-toolchain@v1
       with:
-        version: nightly
+        version: stable
     
     - name: Run forge fmt
+      env:
+        FOUNDRY_DISABLE_NIGHTLY_WARNING: 1
       run: |
         forge fmt --check src/ test/ script/
         if [ $? -ne 0 ]; then
