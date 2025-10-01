@@ -4,7 +4,7 @@ pragma solidity ^0.8.19;
 /**
  * @title ITokenReceiver
  * @dev Interface for contracts that can receive tokens via transferWithCallback
- * @notice This interface defines the callback function that will be called 
+ * @notice This interface defines the callback function that will be called
  *         when tokens are transferred to a contract address using transferWithCallback
  */
 interface ITokenReceiver {
@@ -16,9 +16,5 @@ interface ITokenReceiver {
      * @notice This function should handle the token reception logic
      * @notice It should revert if the transfer is not accepted
      */
-    function tokensReceived(
-        address from,
-        uint256 value,
-        bytes calldata data
-    ) external;
+    function tokensReceived(address from, uint256 value, bytes calldata data) external;
 }

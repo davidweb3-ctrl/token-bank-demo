@@ -11,15 +11,9 @@ import "./ITokenReceiver.sol";
  * @author DeCert Token Bank Demo V2
  */
 contract BaseERC20V2 is BaseERC20 {
-    
     // ============ Events ============
     /// @dev Emitted when tokens are transferred with callback to a contract
-    event TransferWithCallback(
-        address indexed from, 
-        address indexed to, 
-        uint256 value, 
-        bytes data
-    );
+    event TransferWithCallback(address indexed from, address indexed to, uint256 value, bytes data);
 
     // ============ Hook Transfer Functions ============
     /**
@@ -34,22 +28,18 @@ contract BaseERC20V2 is BaseERC20 {
      * - The tokensReceived call must not revert
      * @notice Emits Transfer and TransferWithCallback events
      */
-    function transferWithCallback(
-        address _to,
-        uint256 _value,
-        bytes calldata _data
-    ) public returns (bool success) {
+    function transferWithCallback(address _to, uint256 _value, bytes calldata _data) public returns (bool success) {
         // First perform the standard transfer
         require(balances[msg.sender] >= _value, "ERC20: transfer amount exceeds balance");
         require(_to != address(0), "ERC20: transfer to the zero address");
-        
+
         // Execute the transfer
         balances[msg.sender] -= _value;
         balances[_to] += _value;
 
         // Emit standard Transfer event
         emit Transfer(msg.sender, _to, _value);
-        
+
         // Check if recipient is a contract and call tokensReceived if it is
         if (_isContract(_to)) {
             try ITokenReceiver(_to).tokensReceived(msg.sender, _value, _data) {
@@ -59,10 +49,10 @@ contract BaseERC20V2 is BaseERC20 {
                 revert("ERC20V2: tokensReceived callback failed");
             }
         }
-        
+
         // Emit callback-specific event
         emit TransferWithCallback(msg.sender, _to, _value, _data);
-        
+
         return true;
     }
 
@@ -79,12 +69,10 @@ contract BaseERC20V2 is BaseERC20 {
      * - The tokensReceived call must not revert
      * @notice Emits Transfer and TransferWithCallback events
      */
-    function transferFromWithCallback(
-        address _from,
-        address _to,
-        uint256 _value,
-        bytes calldata _data
-    ) public returns (bool success) {
+    function transferFromWithCallback(address _from, address _to, uint256 _value, bytes calldata _data)
+        public
+        returns (bool success)
+    {
         // Check allowance and balances
         require(balances[_from] >= _value, "ERC20: transfer amount exceeds balance");
         require(allowances[_from][msg.sender] >= _value, "ERC20: transfer amount exceeds allowance");
@@ -97,7 +85,7 @@ contract BaseERC20V2 is BaseERC20 {
 
         // Emit standard Transfer event
         emit Transfer(_from, _to, _value);
-        
+
         // Check if recipient is a contract and call tokensReceived if it is
         if (_isContract(_to)) {
             try ITokenReceiver(_to).tokensReceived(_from, _value, _data) {
@@ -107,10 +95,10 @@ contract BaseERC20V2 is BaseERC20 {
                 revert("ERC20V2: tokensReceived callback failed");
             }
         }
-        
+
         // Emit callback-specific event
         emit TransferWithCallback(_from, _to, _value, _data);
-        
+
         return true;
     }
 

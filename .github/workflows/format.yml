@@ -1,0 +1,30 @@
+name: Format Check
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Install Foundry
+      uses: foundry-rs/foundry-toolchain@v1
+      with:
+        version: nightly
+    
+    - name: Run forge fmt
+      run: |
+        forge fmt --check src/ test/ script/
+        if [ $? -ne 0 ]; then
+          echo "❌ Code formatting check failed"
+          echo "Please run 'forge fmt' to fix formatting issues"
+          exit 1
+        else
+          echo "✅ Code formatting check passed"
+        fi

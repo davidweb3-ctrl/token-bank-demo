@@ -9,18 +9,18 @@ contract DeployV2Script is Script {
     function run() public {
         // Start broadcasting transactions
         vm.startBroadcast();
-        
+
         // Deploy BaseERC20V2 contract
         BaseERC20V2 tokenV2 = new BaseERC20V2();
         console.log("BaseERC20V2 deployed at:", address(tokenV2));
-        
+
         // Deploy TokenBankV2 contract
         TokenBankV2 bankV2 = new TokenBankV2(address(tokenV2));
         console.log("TokenBankV2 deployed at:", address(bankV2));
-        
+
         // Stop broadcasting
         vm.stopBroadcast();
-        
+
         // Log token information
         console.log("Token Name:", tokenV2.name());
         console.log("Token Symbol:", tokenV2.symbol());

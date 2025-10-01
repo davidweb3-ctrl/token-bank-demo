@@ -9,18 +9,18 @@ contract DeployScript is Script {
     function run() public {
         // Start broadcasting transactions
         vm.startBroadcast();
-        
+
         // Deploy BaseERC20 contract
         BaseERC20 token = new BaseERC20();
         console.log("BaseERC20 deployed at:", address(token));
-        
+
         // Deploy TokenBank contract
         TokenBank bank = new TokenBank(address(token));
         console.log("TokenBank deployed at:", address(bank));
-        
+
         // Stop broadcasting
         vm.stopBroadcast();
-        
+
         // Log token information
         console.log("Token Name:", token.name());
         console.log("Token Symbol:", token.symbol());
@@ -28,4 +28,3 @@ contract DeployScript is Script {
         console.log("Token Total Supply:", token.totalSupply());
     }
 }
-

@@ -12,11 +12,10 @@ import "./ITokenReceiver.sol";
  * @author DeCert Token Bank Demo V2
  */
 contract TokenBankV2 is TokenBank, ITokenReceiver {
-    
     // ============ Additional Events ============
     /// @dev Emitted when tokens are deposited via callback
     event DepositViaCallback(address indexed user, uint256 amount, bytes data);
-    
+
     // ============ Constructor ============
     /**
      * @dev Constructor that initializes the bank with BaseERC20V2 token
@@ -39,20 +38,16 @@ contract TokenBankV2 is TokenBank, ITokenReceiver {
      * - Tokens must already be transferred to this contract before this call
      * @notice Emits DepositViaCallback and Deposit events
      */
-    function tokensReceived(
-        address from,
-        uint256 value,
-        bytes calldata data
-    ) external override {
+    function tokensReceived(address from, uint256 value, bytes calldata data) external override {
         // Verify that the caller is the token contract
         require(msg.sender == address(token), "TokenBankV2: caller is not the token contract");
-        
+
         // Verify that we actually received the tokens
         require(value > 0, "TokenBankV2: cannot deposit zero amount");
-        
+
         // Record the deposit in our mapping
         deposits[from] += value;
-        
+
         // Emit events
         emit DepositViaCallback(from, value, data);
         emit Deposit(from, value);
@@ -98,16 +93,8 @@ contract TokenBankV2 is TokenBank, ITokenReceiver {
      * @return totalBalance The total balance held by the bank
      * @return supportsCallbacks Whether callback deposits are supported
      */
-    function getBankInfo() public view returns (
-        address tokenAddress,
-        uint256 totalBalance,
-        bool supportsCallbacks
-    ) {
-        return (
-            address(token),
-            getTotalBalance(),
-            supportsCallback()
-        );
+    function getBankInfo() public view returns (address tokenAddress, uint256 totalBalance, bool supportsCallbacks) {
+        return (address(token), getTotalBalance(), supportsCallback());
     }
 
     // ============ Emergency Functions ============
@@ -120,11 +107,11 @@ contract TokenBankV2 is TokenBank, ITokenReceiver {
         uint256 contractBalance = token.balanceOf(address(this));
         // Note: getTotalBalance() returns the actual contract balance, not recorded deposits
         // We need to calculate if there are any unaccounted tokens
-        
+
         // For this implementation, we'll attribute any direct transfers to the caller
         // In a production system, you might want more sophisticated logic
         uint256 currentDeposits = deposits[msg.sender];
-        
+
         // Check if the contract received tokens that aren't accounted for this user
         // This is a simplified implementation - in reality you'd need to track total deposits
         if (contractBalance > 0) {

@@ -1,0 +1,3 @@
+# Exclude lib directory from formatting
+lib/** linguist-generated=true
+lib/** -diff

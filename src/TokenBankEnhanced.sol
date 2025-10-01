@@ -10,23 +10,23 @@ import "./BaseERC20.sol";
 contract TokenBankEnhanced {
     BaseERC20 public token;
     address public admin;
-    
+
     // Mapping to track deposits for each address
     mapping(address => uint256) public deposits;
-    
+
     // Array to track all depositors
     address[] private depositors;
-    
+
     // Events
     event Deposit(address indexed user, uint256 amount);
     event AdminWithdraw(address indexed admin, address indexed to, uint256 amount);
-    
+
     // Modifiers
     modifier onlyAdmin() {
         require(msg.sender == admin, "Only admin can call this function");
         _;
     }
-    
+
     /**
      * @dev Constructor that sets the ERC20 token address and admin
      * @param _token The address of the BaseERC20 token contract
@@ -35,7 +35,7 @@ contract TokenBankEnhanced {
         token = BaseERC20(_token);
         admin = msg.sender;
     }
-    
+
     /**
      * @dev Deposit tokens into the bank
      * @param amount The amount of tokens to deposit
@@ -44,21 +44,21 @@ contract TokenBankEnhanced {
         require(amount > 0, "Amount must be greater than 0");
         require(token.balanceOf(msg.sender) >= amount, "Insufficient token balance");
         require(token.allowance(msg.sender, address(this)) >= amount, "Insufficient allowance");
-        
+
         // If this is the first deposit from this user, add to depositors array
         if (deposits[msg.sender] == 0) {
             depositors.push(msg.sender);
         }
-        
+
         // Transfer tokens from user to this contract
         require(token.transferFrom(msg.sender, address(this), amount), "Transfer failed");
-        
+
         // Update deposits mapping
         deposits[msg.sender] += amount;
-        
+
         emit Deposit(msg.sender, amount);
     }
-    
+
     /**
      * @dev Admin withdraws tokens from the bank
      * @param to The address to send tokens to
@@ -68,13 +68,13 @@ contract TokenBankEnhanced {
         require(amount > 0, "Amount must be greater than 0");
         require(to != address(0), "Cannot withdraw to zero address");
         require(token.balanceOf(address(this)) >= amount, "Insufficient contract balance");
-        
+
         // Transfer tokens from this contract to specified address
         require(token.transfer(to, amount), "Transfer failed");
-        
+
         emit AdminWithdraw(admin, to, amount);
     }
-    
+
     /**
      * @dev Get the deposited balance of a user
      * @param user The address to check
@@ -83,7 +83,7 @@ contract TokenBankEnhanced {
     function getDeposits(address user) public view returns (uint256) {
         return deposits[user];
     }
-    
+
     /**
      * @dev Get the total token balance of this contract
      * @return The total balance
@@ -91,7 +91,7 @@ contract TokenBankEnhanced {
     function getTotalBalance() public view returns (uint256) {
         return token.balanceOf(address(this));
     }
-    
+
     /**
      * @dev Get top 3 depositors by deposit amount
      * @return top3 Array of top 3 depositor addresses
@@ -103,19 +103,19 @@ contract TokenBankEnhanced {
             top3[i] = address(0);
             amounts[i] = 0;
         }
-        
+
         // Find top 3 depositors
         for (uint256 i = 0; i < depositors.length; i++) {
             address depositor = depositors[i];
             uint256 amount = deposits[depositor];
-            
+
             // Check if this depositor should be in top 3
             for (uint256 j = 0; j < 3; j++) {
                 if (amount > amounts[j]) {
                     // Shift lower ranks down
                     for (uint256 k = 2; k > j; k--) {
-                        top3[k] = top3[k-1];
-                        amounts[k] = amounts[k-1];
+                        top3[k] = top3[k - 1];
+                        amounts[k] = amounts[k - 1];
                     }
                     // Insert current depositor
                     top3[j] = depositor;
@@ -124,10 +124,10 @@ contract TokenBankEnhanced {
                 }
             }
         }
-        
+
         return (top3, amounts);
     }
-    
+
     /**
      * @dev Get the number of depositors
      * @return The number of unique depositors
@@ -136,4 +136,3 @@ contract TokenBankEnhanced {
         return depositors.length;
     }
 }
-

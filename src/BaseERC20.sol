@@ -10,29 +10,29 @@ contract BaseERC20 {
     // ============ Token Constants ============
     /// @dev Token name constant
     string private constant TOKEN_NAME = "BaseERC20";
-    /// @dev Token symbol constant  
+    /// @dev Token symbol constant
     string private constant TOKEN_SYMBOL = "BERC20";
     /// @dev Token decimals constant (18 is standard for most ERC20 tokens)
     uint8 private constant TOKEN_DECIMALS = 18;
     /// @dev Total supply constant: 100 million tokens with 18 decimals
     uint256 private constant TOKEN_TOTAL_SUPPLY = 100000000 * (10 ** uint256(TOKEN_DECIMALS));
-    
+
     // ============ Public Token Metadata ============
     /// @dev Token name (publicly accessible)
-    string public name; 
+    string public name;
     /// @dev Token symbol (publicly accessible)
-    string public symbol; 
+    string public symbol;
     /// @dev Number of decimals (publicly accessible)
-    uint8 public decimals; 
+    uint8 public decimals;
     /// @dev Total token supply (publicly accessible)
-    uint256 public totalSupply; 
+    uint256 public totalSupply;
 
     // ============ Storage Mappings ============
     /// @dev Mapping from account addresses to their token balances
-    mapping (address => uint256) internal balances; 
+    mapping(address => uint256) internal balances;
     /// @dev Mapping from token owner to spender allowances
     /// @notice allowances[owner][spender] = amount
-    mapping (address => mapping (address => uint256)) internal allowances; 
+    mapping(address => mapping(address => uint256)) internal allowances;
 
     // ============ Events ============
     /// @dev Emitted when tokens are transferred from one account to another
@@ -57,7 +57,7 @@ contract BaseERC20 {
 
         // Assign all tokens to the contract deployer
         balances[msg.sender] = TOKEN_TOTAL_SUPPLY;
-        
+
         // Emit Transfer event for initial token creation
         emit Transfer(address(0), msg.sender, TOKEN_TOTAL_SUPPLY);
     }
@@ -80,7 +80,7 @@ contract BaseERC20 {
      * @return remaining The number of tokens that spender is still allowed to spend
      * @notice This function is part of the ERC20 standard
      */
-    function allowance(address _owner, address _spender) public view returns (uint256 remaining) {   
+    function allowance(address _owner, address _spender) public view returns (uint256 remaining) {
         return allowances[_owner][_spender];
     }
 
@@ -100,20 +100,20 @@ contract BaseERC20 {
         require(balances[msg.sender] >= _value, "ERC20: transfer amount exceeds balance");
         // Prevent transfers to zero address (token burning should be explicit)
         require(_to != address(0), "ERC20: transfer to the zero address");
-        
+
         // Execute the transfer
         balances[msg.sender] -= _value;
         balances[_to] += _value;
 
         // Emit Transfer event
-        emit Transfer(msg.sender, _to, _value);  
-        return true;   
+        emit Transfer(msg.sender, _to, _value);
+        return true;
     }
 
     /**
      * @dev Transfers tokens from one account to another using allowance mechanism
      * @param _from The address to transfer tokens from
-     * @param _to The address to transfer tokens to  
+     * @param _to The address to transfer tokens to
      * @param _value The amount of tokens to transfer
      * @return success True if the transfer was successful
      * @notice Requirements:
@@ -135,10 +135,10 @@ contract BaseERC20 {
         balances[_to] += _value;
         // Reduce the allowance
         allowances[_from][msg.sender] -= _value;
-        
+
         // Emit Transfer event
-        emit Transfer(_from, _to, _value); 
-        return true; 
+        emit Transfer(_from, _to, _value);
+        return true;
     }
 
     // ============ Approval Functions ============
@@ -160,8 +160,7 @@ contract BaseERC20 {
         allowances[msg.sender][_spender] = _value;
 
         // Emit Approval event
-        emit Approval(msg.sender, _spender, _value); 
-        return true; 
+        emit Approval(msg.sender, _spender, _value);
+        return true;
     }
 }
-
